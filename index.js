@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require('body-parser');
 const app = express();
+const usersRepo = require('./repositories/users');
+
 app.use(bodyParser.urlencoded({extended:true}));
 
 app.get("/", (req, res) => {
@@ -16,9 +18,9 @@ app.get("/", (req, res) => {
   `);
 });
 
-app.post("/", (req, res) => {
+app.post("/", async (req, res) => {
   console.log(req.body);
-
+  await usersRepo.create(req.body)
   res.send("Account Created");
 });
 
