@@ -32,7 +32,6 @@ class mongodbCollection {
           if (err) {
             throw err;
           }
-          console.log("Collection created.");
         });
       }
 
@@ -45,15 +44,17 @@ class mongodbCollection {
   };
 
   createDocument = async (doc) => {
-    console.log(`Add a documnet to db with id: ${doc.id} with data \n ${doc}`);
     const result = await this.session.insertOne(doc);
-    console.log(`${result}`);
+
+    return result;
   };
 
   deleteDocument = async (doc) => {
-    console.log(`Add a documnet to db with id: ${doc.id} with data \n ${doc}`);
-    const result = await this.session.deleteOne(filter =>  filter.id == doc.id);
-    console.log(`${result}`);
+    const result = await this.session.deleteOne(
+      (filter) => filter.id == doc.id
+    );
+
+    return result;
   };
 
   getAllDocuments = async () => {
@@ -62,14 +63,10 @@ class mongodbCollection {
     }
     const options = {};
     const query = {};
-    console.log("Logging session" + this.session);
     const cursor = this.session.find(query, options);
-    // print a message if no documents were found
-    if ((await cursor.count()) === 0) {
-      console.log("No documents found!");
-    }
-    // replace console.dir with your callback to access individual elements
+
     const documents = [];
+
     await cursor.forEach((document) => {
       documents.push(document);
     });
@@ -77,6 +74,7 @@ class mongodbCollection {
     return documents;
   };
 }
+
 const username = "sirajurrahman19";
 const password = "4Islamabad";
 const clusterName = "mydb";
