@@ -1,6 +1,6 @@
 const express = require("express");
 const { validationResult } = require("express-validator");
-const usersRepo = require("../../repositories/users");
+const usersRepo = require("../../repositories/usersRepository");
 const router = express.Router();
 const signupTemplate = require("../../views/admin/signup");
 const signinTemplate = require("../../views/admin/signin");
@@ -11,9 +11,11 @@ router.get("/signUp", (req, res) => {
 });
 
 router.post("/signUp", signUpValidation, async (req, res) => {
+  console.log(req.body);
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
+    console.log(errors);
     return res.send(signupTemplate({ req, errors }));
   }
 
@@ -35,12 +37,11 @@ router.get("/signout", async (req, res) => {
 });
 
 router.get("/signIn", async (req, res) => {
-  res.send(signinTemplate());
+  res.send(signinTemplate({}));
 });
 
 router.post("/signIn", signInValidation, async (req, res) => {
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     return res.send(signinTemplate({ errors }));
   }

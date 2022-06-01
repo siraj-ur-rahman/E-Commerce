@@ -1,9 +1,7 @@
-const crypto = require("crypto");
 const mongodbCollection = require("../repositories/mongodbCollection");
 const util = require("util");
-const scrypt = util.promisify(crypto.scrypt);
-
-class UsersRepository {
+const crypto = require("crypto");
+class repository {
   async getAll() {
     if (!mongodbCollection.session) {
       await mongodbCollection.intialize();
@@ -18,25 +16,13 @@ class UsersRepository {
       await mongodbCollection.intialize();
     }
 
-    const salt = crypto.randomBytes(8).toString("hex");
-    const buf = await scrypt(attrs.password, salt, 64);
-
-    const user = { ...attrs, password: `${buf.toString("hex")}.${salt}` };
-
-    mongodbCollection.createDocument(user);
+    mongodbCollection.createDocument(attrs);
 
     return attrs;
   }
 
   randomId() {
     return crypto.randomBytes(4).toString("hex");
-  }
-
-  async comparePassword(saved, supplied) {
-    const [hashed, salt] = saved.split(".");
-    const hashSupplied = await scrypt(supplied, salt, 64);
-
-    return hashSupplied.toString("hex") === hashed;
   }
 
   async getOne(id) {
@@ -75,4 +61,4 @@ class UsersRepository {
   }
 }
 
-module.exports = new UsersRepository();
+module.exports = repository;

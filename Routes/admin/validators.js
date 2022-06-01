@@ -1,5 +1,6 @@
 const { check } = require("express-validator");
-const usersRepo = require("../../repositories/users");
+const { password } = require("../../repositories/mongodbCollection");
+const usersRepo = require("../../repositories/usersRepository");
 
 module.exports = {
   signUpValidation: [
@@ -16,19 +17,26 @@ module.exports = {
         }
       }),
 
-    check("password").isLength({ min: 4, max: 20 }),
-
-    check("confirmationPassword")
+    check("password")
       .isLength({ min: 4, max: 20 })
-      .custom((confirmationPassword, { req }) => {
-        if (confirmationPassword !== req.body.password) {
+      .withMessage("Password must be in a range of 4 to 20 character long"),
+
+    check("passwordConfirmation")
+      .trim()
+      .isLength({ min: 4, max: 20 })
+      .withMessage("Must be between 4 and 20 characters")
+      .custom((passwordConfirmation, { req }) => {
+        if (passwordConfirmation !== req.body.password) {
           throw new Error("Passwords must match");
         }
+        return true;
       }),
   ],
 
   signInValidation: [
-    check("password").isLength({ min: 4, max: 20 }),
+    check("password")
+      .isLength({ min: 4, max: 20 })
+      .withMessage("Password must be in a range of 4 to 20 character long"),
 
     check("email")
       .trim()
@@ -39,8 +47,14 @@ module.exports = {
         const user = await usersRepo.getOneBy({ email });
 
         if (!user) {
-          throw new Error("Email id does not exists.");
+          return false;
         }
+
+        return true;
+      })
+      .withMessage("Email id does not exists.")
+      .custom(async (email) => {
+        const user = await usersRepo.getOneBy({ email });
 
         const isValid = await usersRepo.comparePassword(
           user.password,
@@ -48,8 +62,9 @@ module.exports = {
         );
 
         if (!isValid) {
-          throw new Error("invalid password");
+          return false;
         }
       })
+      .withMessage("invalid password"),
   ],
 };
