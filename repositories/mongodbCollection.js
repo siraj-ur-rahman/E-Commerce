@@ -19,7 +19,6 @@ class mongodbCollection {
     });
 
     client.connect(async (err, db) => {
-      console.log(`Session is open for ${this.collection}`);
       const database = db.db(dbName);
 
       var collections = await database.collections();
@@ -28,7 +27,7 @@ class mongodbCollection {
         (x) => x.namespace == `${dbName}.${collection}`
       );
       if (!exists) {
-        dbo.createCollection(collection, (err, res) => {
+        database.createCollection(collection, (err, res) => {
           if (err) {
             throw err;
           }
@@ -76,10 +75,10 @@ class mongodbCollection {
 }
 
 const username = "sirajurrahman19";
-const password = "4Islamabad";
+const password = "tm52poe7d1v72tlv";
 const clusterName = "mydb";
 const dbName = "E-Commerce";
-let collection = "Users";
+let collection = "ecommerce";
 
 module.exports = new mongodbCollection(
   username,

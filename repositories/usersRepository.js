@@ -5,6 +5,10 @@ const repository = require("./repository");
 const scrypt = util.promisify(crypto.scrypt);
 
 class usersRepository extends repository {
+  constructor() {
+    super("Users");
+  }
+
   async create(attrs) {
     attrs.id = this.randomId();
 
@@ -16,7 +20,7 @@ class usersRepository extends repository {
     const buf = await scrypt(attrs.password, salt, 64);
 
     const user = { ...attrs, password: `${buf.toString("hex")}.${salt}` };
-
+user.docType = 
     mongodbCollection.createDocument(user);
 
     return attrs;

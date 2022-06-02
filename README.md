@@ -10,4 +10,5 @@ This web application is built using the following libraries.
   - cookie-session
   - body-parser
   - Mongodb
+  - multer
 

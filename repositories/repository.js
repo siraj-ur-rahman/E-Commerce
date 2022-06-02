@@ -2,6 +2,10 @@ const mongodbCollection = require("../repositories/mongodbCollection");
 const util = require("util");
 const crypto = require("crypto");
 class repository {
+  constructor(docType) {
+    this.docType = docType;
+  }
+
   async getAll() {
     if (!mongodbCollection.session) {
       await mongodbCollection.intialize();
@@ -11,6 +15,7 @@ class repository {
 
   async create(attrs) {
     attrs.id = this.randomId();
+    attrs.docType = this.docType;
 
     if (!mongodbCollection.session) {
       await mongodbCollection.intialize();
@@ -27,7 +32,7 @@ class repository {
 
   async getOne(id) {
     const records = await this.getAll();
-    return records.find((record) => record.id === id);
+    return records.find((record) => record.id === id && record.docType === this.docType);
   }
 
   async delete(id) {
@@ -36,7 +41,7 @@ class repository {
     }
 
     const records = await this.getAll();
-    const filteredRecords = records.filter((record) => record.id !== id);
+    const filteredRecords = records.filter((record) => record.id !== id && record.docType === this.docType);
     for (let record of filteredRecords) {
       await mongodbCollection.deleteDocument(record);
     }
@@ -45,7 +50,9 @@ class repository {
   async getOneBy(filters) {
     const records = await this.getAll();
 
-    for (let record of records) {
+    const filteredRecords = records.filter((record) => record.docType === this.docType);
+    
+    for (let record of filteredRecords) {
       let found = true;
 
       for (let key in filters) {
