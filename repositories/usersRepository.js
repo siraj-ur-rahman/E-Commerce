@@ -20,8 +20,8 @@ class usersRepository extends repository {
     const buf = await scrypt(attrs.password, salt, 64);
 
     const user = { ...attrs, password: `${buf.toString("hex")}.${salt}` };
-user.docType = 
-    mongodbCollection.createDocument(user);
+    
+    await super.create(user);
 
     return attrs;
   }

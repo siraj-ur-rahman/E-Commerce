@@ -49,19 +49,19 @@ class mongodbCollection {
   };
 
   deleteDocument = async (doc) => {
-    const result = await this.session.deleteOne(
-      (filter) => filter.id == doc.id
-    );
+    console.log(`Deleting item with item ${doc.id}`)
+
+    const result = await this.session.deleteOne({ id: doc.id });
 
     return result;
   };
 
-  getAllDocuments = async () => {
+  getAllDocuments = async (query) => {
     if (!this.session) {
       this.intialize();
     }
     const options = {};
-    const query = {};
+
     const cursor = this.session.find(query, options);
 
     const documents = [];

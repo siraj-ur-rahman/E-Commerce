@@ -10,6 +10,11 @@ const { signUpValidation, signInValidation } = require("./validators");
 const router = express.Router();
 upload = multer({ storage: multer.memoryStorage() });
 
+router.get("/", (req, res) => {
+  res.send(signupTemplate({  }));
+});
+
+
 router.get("/signUp", (req, res) => {
   res.send(signupTemplate({ req }));
 });
@@ -20,8 +25,6 @@ router.post(
   upload.single("profilePhoto"),
   handleErrors(signupTemplate),
   async (req, res) => {
-    // const image = req.file.buffer.toString("base64");
-
     const { email, password } = req.body;
 
     const dbUser = { email: email, password: password };
@@ -37,7 +40,7 @@ router.post(
 router.get("/signout", async (req, res) => {
   req.session = null;
 
-  res.send(`You are logout`);
+  res.redirect(`/signIn`);
 });
 
 router.get("/signIn", async (req, res) => {
@@ -55,7 +58,7 @@ router.post(
 
     req.session.UserId = user.id;
 
-    res.send("Account Signed In");
+    res.redirect(`/admin/products`);
   }
 );
 

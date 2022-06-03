@@ -10,7 +10,8 @@ class repository {
     if (!mongodbCollection.session) {
       await mongodbCollection.intialize();
     }
-    return mongodbCollection.getAllDocuments();
+
+    return mongodbCollection.getAllDocuments({ docType: this.docType });
   }
 
   async create(attrs) {
@@ -32,7 +33,9 @@ class repository {
 
   async getOne(id) {
     const records = await this.getAll();
-    return records.find((record) => record.id === id && record.docType === this.docType);
+    return records.find(
+      (record) => record.id === id && record.docType === this.docType
+    );
   }
 
   async delete(id) {
@@ -41,7 +44,10 @@ class repository {
     }
 
     const records = await this.getAll();
-    const filteredRecords = records.filter((record) => record.id !== id && record.docType === this.docType);
+    const filteredRecords = records.filter(
+      (record) => record.id !== id && record.docType === this.docType
+    );
+
     for (let record of filteredRecords) {
       await mongodbCollection.deleteDocument(record);
     }
@@ -50,8 +56,10 @@ class repository {
   async getOneBy(filters) {
     const records = await this.getAll();
 
-    const filteredRecords = records.filter((record) => record.docType === this.docType);
-    
+    const filteredRecords = records.filter(
+      (record) => record.docType === this.docType
+    );
+
     for (let record of filteredRecords) {
       let found = true;
 

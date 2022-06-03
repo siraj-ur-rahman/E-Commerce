@@ -23,12 +23,6 @@ module.exports = ({ req, errors }) => {
               </div>
 
               <div class="field">
-                <label class="label">Profile Photo</label>
-                <input required placeholder="Profile Photo" name="profilePhoto" type="file" />
-                <p class="help is-danger">${getError(errors, 'profilePhoto')}</p>
-              </div>
-
-              <div class="field">
                 <label class="label">Password Confirmation</label>
                 <input required class="input" placeholder="Password Confirmation" name="passwordConfirmation" type="password" />
                 <p class="help is-danger">${getError(

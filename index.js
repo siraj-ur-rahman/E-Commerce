@@ -12,7 +12,7 @@ app.use(cookieSession({ keys: ["Hello World"] }));
 app.use(authenticationRouter)
 app.use(productsRouter)
 
-const port = 3000;
+const port = 5001;
 app.listen(port, () => {
   console.log(`Listinge on port: ${port}`);
 });
